@@ -32,6 +32,31 @@
                         </fieldset>
                     </g:form>
                 </div>
+                <h2>Locações</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Livro</th>
+                        <th>Data de Empréstimo</th>
+                        <th>Data de Devolução Prevista</th>
+                        <th>Data de Devolução</th>
+                        <th>Situação</th>
+                        <th>Prazo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <g:each in="${locacoes}" var="locacao">
+                        <tr>
+                            <td>${locacao.livro?.titulo}</td>
+                            <td>${locacao?.dataEmprestimo}</td>
+                            <td>${locacao?.dataDevolucaoPrevista}</td>
+                            <td>${locacao?.diaDevolucao}</td>
+                            <td>${locacao?.situacao}</td>
+                            <td>${locacao?.prazo ?: ""}</td>
+                        </tr>
+                    </g:each>
+                    </tbody>
+                </table>
             </section>
         </div>
     </div>

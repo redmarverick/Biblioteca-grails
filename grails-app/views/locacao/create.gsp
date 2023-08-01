@@ -38,7 +38,7 @@
                 <g:form resource="${this.locacao}" method="POST">
                     <fieldset class="form">
                         <f:field bean="locacao" property="livro" widget-optionValue="titulo"/>
-                        <f:all bean="locacao" except="livro, cliente, diaDevolucao"/>
+                        <f:all bean="locacao" except="livro, cliente, diaDevolucao, prazo"/>
                         <f:field bean="locacao" property="cliente" widget-optionValue="nomeCompleto"/>
                     </fieldset>
                     <fieldset class="buttons">

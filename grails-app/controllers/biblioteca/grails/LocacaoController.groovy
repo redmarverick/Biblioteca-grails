@@ -1,5 +1,7 @@
 package biblioteca.grails
 
+import biblioteca.grails.LivroService
+
 import grails.gorm.transactions.Transactional
 import grails.validation.ValidationException
 
@@ -11,6 +13,7 @@ import static org.springframework.http.HttpStatus.*
 class LocacaoController {
 
     LocacaoService locacaoService
+    LivroService livroService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -28,18 +31,31 @@ class LocacaoController {
         respond new Locacao(params)
     }
 
+    @Transactional
     def save(Locacao locacao) {
         if (locacao == null) {
             notFound()
             return
         }
 
+        // Check if there are available exemplares
+        def livro = locacao.livro
+        if (livro?.exemplaresDisponiveis == 0) {
+            flash.message = "Não há exemplares disponíveis para locação."
+            render(view: 'create', model: [locacao: locacao])
+            return
+        }
+
         try {
             locacaoService.save(locacao)
+            // Decrement exemplaresDisponiveis after the locação is successfully saved
+            livro.exemplaresDisponiveis -= 1
+            livro.save(flush: true)
         } catch (ValidationException e) {
             respond locacao.errors, view: 'create'
             return
         }
+
 
         request.withFormat {
             form multipartForm {
@@ -71,11 +87,23 @@ class LocacaoController {
                 // Log the error for debugging
                 log.error("Error parsing diaDevolucao: ${e.message}", e)
                 // Set an error message for the user
-                flash.message = "Data de devolução inválida. Utilize o formato yyyy-MM-dd HH:mm."
+                flash.message = "Data de devolução inválida. Utilize o formato dd-MM-yyyy HH:mm." // Corrected date format
                 render(view: "show", model: [locacao: locacao])
                 return
             }
+
             locacao.situacao = LocacaoSituacaoEnum.Devolvido
+            Date date = new Date()
+            SimpleDateFormat dateFormatDevolucao = new SimpleDateFormat("yyyy-MM-dd")
+            String formattedDate = dateFormatDevolucao.format(locacao.diaDevolucao)
+            Date dateWithTimeZero = dateFormatDevolucao.parse(formattedDate)
+            locacao.prazo = dateWithTimeZero > locacao.dataDevolucaoPrevista ? PrazoSituacaoEnum.ATRASO : PrazoSituacaoEnum.DEVOLVIDO
+
+            def livro = locacao.livro
+            if (livro) {
+                livro.exemplaresDisponiveis += 1
+                livro.save(flush: true)
+            }
 
             locacao.save(flush: true)
 

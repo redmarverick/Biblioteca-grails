@@ -15,7 +15,13 @@ class ClienteController {
     }
 
     def show(Long id) {
-        respond clienteService.get(id)
+        Cliente cliente = Cliente.get(id)
+        if (!cliente) {
+            notFound()
+            return
+        }
+        List<Locacao> locacoes = clienteService.getLocacoesByCliente(cliente)
+        respond cliente, model: [locacoes: locacoes]
     }
 
     def create() {

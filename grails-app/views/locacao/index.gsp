@@ -1,3 +1,4 @@
+<%@ page import="biblioteca.grails.PrazoSituacaoEnum" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,10 +36,9 @@
                         <th><g:message code="locacao.dataEmprestimo.label" default="Data de Empréstimo"/></th>
                         <th><g:message code="locacao.dataDevolucaoPrevista.label"
                                        default="Data de Devolução Prevista"/></th>
-                        <th><g:message
-                                code="locacao.diaDevolucao.label"
-                                default="Data de Devolução"/></th>
+                        <th><g:message code="locacao.diaDevolucao.label" default="Data de Devolução"/></th>
                         <th><g:message code="locacao.situacao.label" default="Situação"/></th>
+                        <th><g:message code="locacao.prazo.label" default="Prazo"/></th> <!-- New column for prazo -->
                         <g:if test="${locacao?.situacao.toString() == 'Emprestado'}"><th>Status</th></g:if>
                     </tr>
                     </thead>
@@ -52,7 +52,10 @@
                             <td><g:formatDate format="dd/MM/yyyy" date="${locacao?.dataEmprestimo}"/></td>
                             <td><g:formatDate format="dd/MM/yyyy" date="${locacao?.dataDevolucaoPrevista}"/></td>
                             <td><g:formatDate format="dd/MM/yyyy" date="${locacao?.diaDevolucao}"/></td>
-                            <g:if test="${locacao?.situacao.toString() == 'Devolvido'}"><td>${locacao?.situacao}</td></g:if>
+                            <td>${locacao?.situacao}</td>
+                            <td>
+                                ${locacao?.prazo?:""}
+                            </td>
                             <g:if test="${locacao?.situacao.toString() == 'Emprestado'}">
                                 <td>
                                     <a href="${createLink(controller: 'locacao', action: 'show', id: locacao?.id)}"

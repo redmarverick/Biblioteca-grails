@@ -1,9 +1,8 @@
 package biblioteca.grails
 
-import grails.gorm.annotation.Entity
+import java.util.Date
+import java.util.UUID
 
-@Entity
-@javax.persistence.NamedQuery(name = 'Locacao.findAllByCliente', query = 'FROM Locacao WHERE cliente = :cliente ORDER BY dataEmprestimo DESC')
 class Locacao {
     Cliente cliente
     Livro livro
@@ -13,11 +12,19 @@ class Locacao {
     LocacaoSituacaoEnum situacao = LocacaoSituacaoEnum.Emprestado
     String prazo
 
-    static belongsTo = [cliente: Cliente, livro: Livro]
+    // Define the many-to-one association with Cliente
+    static belongsTo = [cliente: Cliente]
 
     static constraints = {
         diaDevolucao(nullable: true)
         prazo(nullable: true)
         situacao enum: LocacaoSituacaoEnum
     }
+    static namedQueries = {
+        locacoesByClienteId { clienteNome ->
+            createAlias('cliente', 'c')
+            eq('c.nomeCompleto', clienteNome)
+        }
+    }
+
 }

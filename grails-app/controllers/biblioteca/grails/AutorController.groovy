@@ -3,18 +3,20 @@ package biblioteca.grails
 import grails.validation.ValidationException
 
 import static org.springframework.http.HttpStatus.*
-
+import grails.plugin.springsecurity.annotation.Secured
 class AutorController {
 
     AutorService autorService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond autorService.list(params), model: [autorCount: autorService.count()]
     }
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def show(Long id) {
         def autor = Autor.get(id)
         if (!autor) {
@@ -30,10 +32,12 @@ class AutorController {
     }
 
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def create() {
         respond new Autor(params)
     }
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def save(Autor autor) {
         if (autor == null) {
             notFound()
@@ -56,10 +60,12 @@ class AutorController {
         }
     }
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def edit(Long id) {
         respond autorService.get(id)
     }
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def update(Autor autor) {
         if (autor == null) {
             notFound()
@@ -82,6 +88,7 @@ class AutorController {
         }
     }
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def delete(Long id) {
         if (id == null) {
             notFound()

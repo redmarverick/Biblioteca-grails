@@ -32,7 +32,7 @@
                     </g:hasErrors>
                     <g:form resource="${this.cliente}" method="POST">
                         <fieldset class="form">
-                            <f:all bean="cliente"/>
+                            <f:all bean="cliente" except="clienteId, locacoes, locacoesCount"/>
                         </fieldset>
                         <fieldset class="buttons">
                             <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />

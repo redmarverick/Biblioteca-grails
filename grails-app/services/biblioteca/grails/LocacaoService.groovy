@@ -1,6 +1,7 @@
 package biblioteca.grails
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 
 @Service(Locacao)
 interface LocacaoService {
@@ -15,4 +16,15 @@ interface LocacaoService {
 
     Locacao save(Locacao locacao)
 
+    @Transactional(readOnly = true)
+    Long countLocacoesByCliente(Cliente cliente)
+
+    @Transactional(readOnly = true)
+    Long countLocacoesBySituacao(LocacaoSituacaoEnum situacao)
+
+    @Transactional(readOnly = true)
+    List<Cliente> getTop10ClientesByLocacoes()
+
+    @Transactional(readOnly = true)
+    List<Livro> getTop10LivrosByLocacoes()
 }

@@ -10,10 +10,8 @@ class ClienteController {
 
     @Secured(['ROLE_ADMIN'])
     def estatisticas() {
-        // Counter for "Emprestado" LocacaoSituacaoEnum
         def emprestadosCount = Locacao.countBySituacao(LocacaoSituacaoEnum.Emprestado)
 
-        // Top 10 Clientes with most Locacoes
         def topClientes = Cliente.createCriteria().list {
             projections {
                 groupProperty('nome')
@@ -23,7 +21,6 @@ class ClienteController {
             maxResults(10)
         }
 
-        // Top 10 Livros with most Locacoes
         def topLivros = Livro.createCriteria().list {
             projections {
                 groupProperty('titulo')

@@ -9,6 +9,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 
 import static org.springframework.http.HttpStatus.*
+import grails.plugin.springsecurity.annotation.Secured
 
 class LocacaoController {
 
@@ -18,19 +19,23 @@ class LocacaoController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
 
+    @Secured(['ROLE_ADMIN'])
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond locacaoService.list(params), model: [locacaoCount: locacaoService.count()]
     }
 
+    @Secured(['ROLE_ADMIN'])
     def show(Long id) {
         respond locacaoService.get(id)
     }
 
+    @Secured(['ROLE_ADMIN'])
     def create() {
         respond new Locacao(params)
     }
 
+    @Secured(['ROLE_ADMIN'])
     @Transactional
     def save(Locacao locacao) {
         if (locacao == null) {
@@ -38,7 +43,6 @@ class LocacaoController {
             return
         }
 
-        // Check if there are available exemplares
         def livro = locacao.livro
         if (livro?.exemplaresDisponiveis == 0) {
             flash.message = "Não há exemplares disponíveis para locação."
@@ -48,7 +52,6 @@ class LocacaoController {
 
         try {
             locacaoService.save(locacao)
-            // Decrement exemplaresDisponiveis after the locação is successfully saved
             livro.exemplaresDisponiveis -= 1
             livro.save(flush: true)
         } catch (ValidationException e) {
@@ -66,10 +69,12 @@ class LocacaoController {
         }
     }
 
+    @Secured(['ROLE_ADMIN'])
     def edit(Long id) {
         respond locacaoService.get(id)
     }
 
+    @Secured(['ROLE_ADMIN'])
     @Transactional
     def devolver(Long id) {
         def locacao = Locacao.get(id)
@@ -84,9 +89,6 @@ class LocacaoController {
             try {
                 locacao.diaDevolucao = dateFormat.parse("${params?.diaDevolucao_day}-${params?.diaDevolucao_month}-${params?.diaDevolucao_year} ${params?.diaDevolucao_hour}:${params?.diaDevolucao_minute}")
             } catch (ParseException e) {
-                // Log the error for debugging
-                log.error("Error parsing diaDevolucao: ${e.message}", e)
-                // Set an error message for the user
                 flash.message = "Data de devolução inválida. Utilize o formato dd-MM-yyyy HH:mm." // Corrected date format
                 render(view: "show", model: [locacao: locacao])
                 return
@@ -115,6 +117,7 @@ class LocacaoController {
     }
 
 
+    @Secured(['ROLE_ADMIN'])
     @Transactional
     def update() {
         def locacao = Locacao.get(params.id)
@@ -128,6 +131,7 @@ class LocacaoController {
         }
     }
 
+    @Secured(['ROLE_ADMIN'])
     def delete(Long id) {
         if (id == null) {
             notFound()

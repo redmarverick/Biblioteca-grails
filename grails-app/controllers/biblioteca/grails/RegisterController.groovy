@@ -17,7 +17,7 @@ class RegisterController {
 
     def register() {
         if(!params.password.equals(params.repassword)) {
-            flash.message = "Password and Re-Password not match"
+            flash.message = "A senha e a confirmação são diferentes"
             redirect action: "index"
             return
         } else {
@@ -32,15 +32,15 @@ class RegisterController {
                         it.clear()
                     }
 
-                    flash.message = "You have registered successfully. Please login."
+                    flash.message = "Usuário registrado com sucesso. Você pode fazer login agora!"
                     redirect controller: "login", action: "auth"
                 } else {
-                    flash.message = "Register failed"
+                    flash.message = "O registro falhou"
                     render view: "index"
                     return
                 }
             } catch (ValidationException e) {
-                flash.message = "Register Failed"
+                flash.message = "O registro falhou"
                 redirect action: "index"
                 return
             }

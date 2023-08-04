@@ -34,7 +34,7 @@
                     <g:form resource="${this.cliente}" method="PUT">
                         <g:hiddenField name="version" value="${this.cliente?.version}" />
                         <fieldset class="form">
-                            <f:all bean="cliente"/>
+                            <f:all bean="cliente" except="clienteId, locacoes, locacoesCount"/>
                         </fieldset>
                         <fieldset class="buttons">
                             <input class="save" type="submit" value="${message(code: 'default.button.update.label', default: 'Update')}" />

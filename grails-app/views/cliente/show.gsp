@@ -24,7 +24,7 @@
                     <g:if test="${flash.message}">
                     <div class="message" role="status">${flash.message}</div>
                     </g:if>
-                    <f:display bean="cliente" />
+                    <f:display bean="cliente" except="clienteId, locacoes, locacoesCount"/>
                     <g:form resource="${this.cliente}" method="DELETE">
                         <fieldset class="buttons">
                             <g:link class="edit" action="edit" resource="${this.cliente}"><g:message code="default.button.edit.label" default="Edit" /></g:link>

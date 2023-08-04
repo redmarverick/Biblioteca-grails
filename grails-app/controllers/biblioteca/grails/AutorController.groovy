@@ -32,12 +32,12 @@ class AutorController {
     }
 
 
-    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
+    @Secured(['ROLE_ADMIN'])
     def create() {
         respond new Autor(params)
     }
 
-    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
+    @Secured(['ROLE_ADMIN'])
     def save(Autor autor) {
         if (autor == null) {
             notFound()
@@ -60,12 +60,12 @@ class AutorController {
         }
     }
 
-    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
+    @Secured(['ROLE_ADMIN'])
     def edit(Long id) {
         respond autorService.get(id)
     }
 
-    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
+    @Secured(['ROLE_ADMIN'])
     def update(Autor autor) {
         if (autor == null) {
             notFound()
@@ -88,7 +88,7 @@ class AutorController {
         }
     }
 
-    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
+    @Secured(['ROLE_ADMIN'])
     def delete(Long id) {
         if (id == null) {
             notFound()

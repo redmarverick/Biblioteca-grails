@@ -3,6 +3,7 @@ package biblioteca.grails
 import grails.validation.ValidationException
 
 import static org.springframework.http.HttpStatus.*
+import grails.plugin.springsecurity.annotation.Secured
 
 class LivroController {
 
@@ -10,19 +11,23 @@ class LivroController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond livroService.list(params), model: [livroCount: livroService.count()]
     }
 
+    @Secured(['ROLE_ADMIN', 'ROLE_USER'])
     def show(Long id) {
         respond livroService.get(id)
     }
 
+    @Secured(['ROLE_ADMIN'])
     def create() {
         respond new Livro(params)
     }
 
+    @Secured(['ROLE_ADMIN'])
     def save(Livro livro) {
         if (livro == null) {
             notFound()
@@ -45,10 +50,12 @@ class LivroController {
         }
     }
 
+    @Secured(['ROLE_ADMIN'])
     def edit(Long id) {
         respond livroService.get(id)
     }
 
+    @Secured(['ROLE_ADMIN'])
     def update(Livro livro) {
         if (livro == null) {
             notFound()
@@ -71,6 +78,7 @@ class LivroController {
         }
     }
 
+    @Secured(['ROLE_ADMIN'])
     def delete(Long id) {
         if (id == null) {
             notFound()
